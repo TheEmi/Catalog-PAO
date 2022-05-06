@@ -27,7 +27,9 @@ public class ClassService {
         System.out.println("Student " + classRepo.get(index) + " will be deleted");
         classRepo.delete(index);
     }
-
+    public Class get(){
+        return classRepo;
+    }
     public char getId(){
         return classRepo.getId();
     }

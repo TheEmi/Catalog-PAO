@@ -1,6 +1,6 @@
 package system.service;
 import system.exceptions.InvalidDataException;
-
+import system.domain.Student;
 import java.io.*;
 import java.nio.file.*;
 import java.text.DateFormat;  
@@ -39,9 +39,38 @@ public class HandleCSV {
         };
         return classes;
     }
-    public void writeCSV(){}
-    public void deleteCSV(){
-
+    public void writeCSV(ClassService[] classes){
+        try{
+        FileWriter cla = new FileWriter("src/system/CSVs/classes.csv");
+        FileWriter stu = new FileWriter("src/system/CSVs/students.csv");
+        
+        for (int i=0; i<classes.length; i++) {
+            if(classes[i]!=null){
+                cla.append(Integer.toString(i+1));
+                cla.append(',');
+                cla.append(classes[i].getId());
+                cla.append("\n");
+                for (int j=0; j<classes[i].get().getSize(); j++) {
+                    
+                    if(classes[i].get().get(j) != null){
+                        
+                    Student s = classes[i].get().get(j);
+                    stu.append(Integer.toString(j+1));
+                    stu.append(',');
+                    stu.append(s.getName());
+                    stu.append(',');
+                    stu.append(s.getClassId());
+                    stu.append('\n');
+                    }
+                }
+            }
+        }
+        
+        cla.close();
+        stu.close();
+        }catch(IOException e){
+            System.out.println(e.getMessage());
+        }
     }
     public void logCSV(String action){//much easier with Log4j....
         Date date = new Date();

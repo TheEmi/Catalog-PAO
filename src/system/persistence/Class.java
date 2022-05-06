@@ -22,6 +22,9 @@ public class Class {
         //if class is full throw exception
         throw new ClassFullException("Class Full");
      }
+    public Student[] getColl(){
+        return classCollection;
+    }
 
     public Student get(int index) {
         return classCollection[index];

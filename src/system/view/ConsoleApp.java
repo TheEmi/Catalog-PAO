@@ -15,10 +15,12 @@ public class ConsoleApp {
     public static void main(String args[]) {
         ConsoleApp app = new ConsoleApp();
         classes = csvs.loadCSV();
+        csvs.logCSV("logged in");
         while (true) {
             app.showMenu();
             int option = app.readOption();
             app.execute(option);
+            csvs.writeCSV(classes);
         }
     }
 
@@ -65,6 +67,7 @@ public class ConsoleApp {
                 deleteStudent();
                 break;
             case 6:
+                csvs.logCSV("logged out");
                 System.exit(0);
 
         }
@@ -88,7 +91,9 @@ public class ConsoleApp {
         System.out.println("Enter the INDEX of the student you want to delete");
         String numberS = s.nextLine();
         int nrS = Integer.parseInt(numberS);
+        csvs.logCSV("Deleted Student "+classes[nr-1].get().get(nrS-1).getName()+" from class "+classes[nr-1].getId());
         classes[nr-1].deleteStudent(nrS-1);
+        
     }
 
     private void listStudents(){
@@ -97,6 +102,7 @@ public class ConsoleApp {
         String number = s.nextLine();
         int nr = Integer.parseInt(number);
         classes[nr-1].listStudent();
+        csvs.logCSV("listed Students in Class "+classes[nr-1].getId());
     }
     private void addStudent(){
         listClasses();
@@ -108,6 +114,7 @@ public class ConsoleApp {
         try{
             classes[nr-1].registerStudent(name, classes[nr-1].getId());
         }catch (Exception e){};
+        csvs.logCSV("added Student "+name+" to class "+classes[nr-1].getId());
     }
 
     private void listClasses() {
