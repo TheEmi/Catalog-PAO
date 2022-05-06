@@ -8,6 +8,7 @@ import system.domain.*;
 public class ClassService {
     private Class classRepo;
     public ClassService(char classId){
+        
         classRepo = new Class(classId);
     }
     public void registerStudent(String name, char classId) throws InvalidDataException{

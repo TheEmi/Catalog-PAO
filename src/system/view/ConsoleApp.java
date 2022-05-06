@@ -4,14 +4,17 @@ import java.util.Scanner;
 
 import system.exceptions.InvalidDataException;
 import system.service.ClassService;
+import system.service.HandleCSV;
 
 public class ConsoleApp {
     private Scanner s = new Scanner(System.in);
-    private ClassService[] classes = new ClassService[10];
+    private static ClassService[] classes = new ClassService[10];
+    private static HandleCSV csvs = new HandleCSV();
     //add service path
 
     public static void main(String args[]) {
         ConsoleApp app = new ConsoleApp();
+        classes = csvs.loadCSV();
         while (true) {
             app.showMenu();
             int option = app.readOption();
@@ -108,6 +111,7 @@ public class ConsoleApp {
     }
 
     private void listClasses() {
+        csvs.logCSV("listed Classes");
         for (int i=0; i<classes.length; i++) {
             if (classes[i] != null) {
                 System.out.println( i+1+ ". " + classes[i]);
@@ -123,6 +127,7 @@ public class ConsoleApp {
             return;
         }
         char classId = line.charAt(0);
+        csvs.logCSV("added Class "+classId);
         for (int i=0; i<classes.length; i++) {
             if (classes[i] == null) {
                 classes[i] = new ClassService(classId);
