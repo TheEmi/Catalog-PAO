@@ -39,7 +39,13 @@ public class Class {
     } 
 
     public int getSize() {
-        return classCollection.length;
+        for (int i=0; i<classCollection.length; i++) {
+            if (classCollection[i] == null) {
+                System.out.println(i);
+                return i;
+            }
+        }
+        return 30;
     }
 
     public void listClass(){

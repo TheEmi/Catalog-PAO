@@ -20,7 +20,6 @@ public class ConsoleApp {
             app.showMenu();
             int option = app.readOption();
             app.execute(option);
-            csvs.writeCSV(classes);
         }
     }
 
@@ -92,6 +91,7 @@ public class ConsoleApp {
         String numberS = s.nextLine();
         int nrS = Integer.parseInt(numberS);
         csvs.logCSV("Deleted Student "+classes[nr-1].get().get(nrS-1).getName()+" from class "+classes[nr-1].getId());
+        csvs.delStudent(nrS,classes[nr-1].getId());
         classes[nr-1].deleteStudent(nrS-1);
         
     }
@@ -113,6 +113,8 @@ public class ConsoleApp {
         String name = s.nextLine();
         try{
             classes[nr-1].registerStudent(name, classes[nr-1].getId());
+            csvs.cuStudent(name, classes[nr-1].getId(), classes[nr-1].get().getSize());
+            
         }catch (Exception e){};
         csvs.logCSV("added Student "+name+" to class "+classes[nr-1].getId());
     }
@@ -134,10 +136,11 @@ public class ConsoleApp {
             return;
         }
         char classId = line.charAt(0);
-        csvs.logCSV("added Class "+classId);
+        
         for (int i=0; i<classes.length; i++) {
             if (classes[i] == null) {
                 classes[i] = new ClassService(classId);
+                csvs.cuClass(classId, i+1);
                 return;
             }
         }

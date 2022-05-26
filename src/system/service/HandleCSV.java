@@ -1,43 +1,64 @@
 package system.service;
-import system.exceptions.InvalidDataException;
 import system.domain.Student;
 import java.io.*;
+import java.sql.*;
 import java.nio.file.*;
 import java.text.DateFormat;  
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;  
+import java.util.Date;  
 
 public class HandleCSV {
     public ClassService[] loadCSV(){
         ClassService[] classes = new ClassService[10];
-        String[] reader;
-        try{
-            Scanner sc = new Scanner(new File("src/system/CSVs/classes.csv")).useDelimiter("\n");
-            while (sc.hasNext()){  //read classes
-                reader = sc.next().toString().split(",");
-                classes[Integer.parseInt(reader[0])-1] = new ClassService(reader[1].charAt(0));
-            }
-            sc = new Scanner(new File("src/system/CSVs/students.csv")).useDelimiter("\n");
-            while (sc.hasNext()){  //read students
-                reader = sc.next().toString().split(",");                
+        try{  
+            Connection con=DriverManager.getConnection(  
+            "jdbc:mysql://localhost:3306/Liceu","root","root");  
+            Statement stmt=con.createStatement();  
+            ResultSet rs=stmt.executeQuery("select * from Clase;");
+            while(rs.next()){
+                classes[rs.getInt(1)-1] = new ClassService(rs.getString(2).charAt(0));
+            }  
+            rs = stmt.executeQuery("select * from Studenti;");
+            while(rs.next()){
                 for (int i=0; i<classes.length; i++) {
-                    if (classes[i].getId() == reader[2].charAt(0)) {
-                        try{
-                        classes[i].registerStudent(reader[1], reader[2].charAt(0));
-                        break;
-                        }
-                        catch (InvalidDataException e){
-                            System.out.println(reader[2]);
-                        };
-                    }
+                    if(classes[i] != null && classes[i].getId() == rs.getString(3).charAt(0) )
+                    classes[i].registerStudent(rs.getString(2), rs.getString(3).charAt(0));
                 }
-            }
-        }
-        catch(FileNotFoundException e){
-            System.out.println("File not found");
-        };
+                
+            } 
+            con.close();  
+            }catch(Exception e){ System.out.println(e);}  
+        
         return classes;
+    }
+    public void cuClass(char cl, int id){//create class
+        try{  
+            Connection con=DriverManager.getConnection(  
+            "jdbc:mysql://localhost:3306/Liceu","root","root");  
+            Statement stmt=con.createStatement();  
+            stmt.executeUpdate("INSERT INTO Clase values(" + id + ", \""+ cl + "\");");
+            con.close();  
+            }catch(Exception e){ System.out.println(e);} 
+    }
+    public void cuStudent(String Name, char cl, int id){//create class
+        try{  
+            Connection con=DriverManager.getConnection(  
+            "jdbc:mysql://localhost:3306/Liceu","root","root");  
+            Statement stmt=con.createStatement();  
+            stmt.executeUpdate("INSERT INTO Studenti values(" + id + ", \""+ Name + "\",\""+ cl + "\");");
+            con.close();  
+            }catch(Exception e){ System.out.println(e);} 
+    }
+    public void delStudent(int id, char cl){
+        try{  
+            Connection con=DriverManager.getConnection(  
+            "jdbc:mysql://localhost:3306/Liceu","root","root");  
+            Statement stmt=con.createStatement();  
+            stmt.executeUpdate("Delete from Studenti where clasa =\""+cl+"\" and id = "+id+";");
+            stmt.executeUpdate("Update Studenti set id = id-1 where clasa =\""+cl+"\" and id > "+id+";");
+            con.close();  
+            }catch(Exception e){ System.out.println(e);} 
+
     }
     public void writeCSV(ClassService[] classes){
         try{
